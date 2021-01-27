@@ -1,0 +1,292 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Changelog &#8212; SciKit GStat 0.3.2 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Kriging Class" href="reference/kriging.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="changelog">
+<h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="version-0-3-2">
+<h2>Version 0.3.2<a class="headerlink" href="#version-0-3-2" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>[models] Matérn model now adapts effective range to smoothness parameter</p></li>
+<li><p>[models] Matérn model documentation updated</p></li>
+<li><p>[models] some minor updates to references in the docs</p></li>
+</ul>
+</div>
+<div class="section" id="version-0-3-1">
+<h2>Version 0.3.1<a class="headerlink" href="#version-0-3-1" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>[Variogram] - internal distance calculations were refactored, to speed things up</p></li>
+<li><p>[Kriging] - internal distance calculations were refactored, to speed things up</p></li>
+</ul>
+</div>
+<div class="section" id="version-0-3-0">
+<h2>Version 0.3.0<a class="headerlink" href="#version-0-3-0" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>[Variogram] some internal calculations were changed.</p></li>
+<li><p>[DirectionalVariogram] - the circular search are is removed and raises a NotImplementedError</p></li>
+<li><p>[DirectionalVariogram] - direction mask data is calculated way faster and without shapely involved.</p></li>
+<li><p>shapely is not a dependency anymore</p></li>
+<li><p>[unittests] - more unittests were added.</p></li>
+</ul>
+</div>
+<div class="section" id="version-0-2-8">
+<h2>Version 0.2.8<a class="headerlink" href="#version-0-2-8" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>[Variogram] is now <code class="docutils literal notranslate"><span class="pre">pickle.dump()</span></code>-able, by removing <code class="docutils literal notranslate"><span class="pre">lambda</span></code> usage (thanks to &#64;redhog!)</p></li>
+<li><p>[Variogram] now raises a <cite>Warning</cite> if all input values are the same</p></li>
+<li><p>[DOCS] Tutorial added and Dockerfile finalized</p></li>
+<li><p>[Variogram] <cite>normalize</cite> default value changed to <cite>normalize=False</cite></p></li>
+<li><p>[Variogram] <cite>harmonize</cite> parameter is removed</p></li>
+<li><p>[Variogram] Monotonization (old harmonize par) is available as a new
+theoretical model function. Can be used by setting <cite>model=’harmonize’</cite></p></li>
+<li><p>[interfaces] gstools interface implemented.
+<code class="xref py py-func docutils literal notranslate"><span class="pre">gstools_cov_model</span></code>
+takes a <a class="reference internal" href="reference/variogram.html#skgstat.Variogram" title="skgstat.Variogram"><code class="xref py py-class docutils literal notranslate"><span class="pre">skgstat.Variogram</span></code></a> instance and returns a <strong>fitted</strong>
+<cite>gstools.CovModel</cite>.</p></li>
+</ul>
+</div>
+<div class="section" id="version-0-2-7">
+<h2>Version 0.2.7<a class="headerlink" href="#version-0-2-7" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>[Kriging] Little performance gains due to code cleanup.</p></li>
+<li><p>[Variogram] The <cite>normalize=True</cite> default in <cite>__init__</cite> will change to
+<cite>normalize=False</cite> in a future version. A DeprecationWarning was included.</p></li>
+<li><p>[tests] The Variogram class fitting unit tests are now explicitly setting
+the normalize parameter to handle the future deprecation.</p></li>
+<li><p>[tests] More unittests were added to increase coverage</p></li>
+<li><p>[interfaces] The new submodule <cite>skgstat.interfaces</cite> is introduced. This
+submodule collects interfacing classes to use skgstat classes with other
+Python modules.</p></li>
+<li><p>[interfaces] The first interfacing class is the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">VariogramEstimator</span></code>. This
+is a scikit-learn compatible <cite>Estimator</cite> class that can wrap a <cite>Variogram</cite>.
+The intended usage is to find variogram hyper-parameters using <cite>GridSearchCV</cite>.
+This is also the only usecase covered in the unit tests.</p></li>
+<li><p>[interfaces] Implemented
+<code class="xref py py-func docutils literal notranslate"><span class="pre">pykrige_as_kwargs</span></code>.
+Pass a <a class="reference internal" href="reference/variogram.html#skgstat.Variogram" title="skgstat.Variogram"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variogram</span></code></a> object and a dict of parameters
+is returned that can be passed to pykrige Kriging classes using the double
+star operator.</p></li>
+<li><p>Added Dockerfile. You can now build a docker container with scikit-gstat
+installed in a miniconda environment. On run, a jupyter server is exposed on
+Port 8888. In a future release, this server will serve tutorial notebooks.</p></li>
+<li><p>[stmodels] small bugfix in product model</p></li>
+<li><p>[stmodels] removed variogram wrapper and added stvariogram wrapper to
+correctly detect space and time lags</p></li>
+</ul>
+</div>
+<div class="section" id="version-0-2-6">
+<h2>Version 0.2.6<a class="headerlink" href="#version-0-2-6" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p>[OrdinaryKriging]: widely enhanced the class in terms of performance, code
+coverage and handling.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>added <cite>mode</cite> property: The class can derive exact solutions or estimate
+the kriging matrix for high performance gains</p></li>
+<li><p>multiprocessing is supported now</p></li>
+<li><p>the <cite>solver</cite> property can be used to choose from 3 different solver for
+the kriging matrix.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>[OrdinaryKriging]: calculates the kriging variance along with the estimation itself.
+The Kriging variance can be accessed after a call to
+<a class="reference internal" href="reference/kriging.html#skgstat.OrdinaryKriging.transform" title="skgstat.OrdinaryKriging.transform"><code class="xref py py-func docutils literal notranslate"><span class="pre">OrdinaryKriging.transform</span></code></a> and can be
+accessed through the <cite>OrdinaryKriging.sigma</cite> attribute.</p></li>
+<li><p>[Variogram] deprecated
+<code class="xref py py-func docutils literal notranslate"><span class="pre">Variogram.compiled_model</span></code>. Use
+<a class="reference internal" href="reference/variogram.html#skgstat.Variogram.fitted_model" title="skgstat.Variogram.fitted_model"><code class="xref py py-func docutils literal notranslate"><span class="pre">Variogram.fitted_model</span></code></a> instead.</p></li>
+<li><p>[Variogram] added a new and much faster version of the parameterized model:
+<a class="reference internal" href="reference/variogram.html#skgstat.Variogram.fitted_model" title="skgstat.Variogram.fitted_model"><code class="xref py py-func docutils literal notranslate"><span class="pre">Variogram.fitted_model</span></code></a></p></li>
+<li><p>[Variogram] minor change in the cubic model. This made the adaption of the
+associated unit test necessary.</p></li>
+</ul>
+</div>
+<div class="section" id="version-0-2-5">
+<h2>Version 0.2.5<a class="headerlink" href="#version-0-2-5" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>added <a class="reference internal" href="reference/kriging.html#skgstat.OrdinaryKriging" title="skgstat.OrdinaryKriging"><code class="xref py py-class docutils literal notranslate"><span class="pre">OrdinaryKriging</span></code></a> for using a
+<a class="reference internal" href="reference/variogram.html#skgstat.Variogram" title="skgstat.Variogram"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variogram</span></code></a> to perform an interpolation.</p></li>
+</ul>
+</div>
+<div class="section" id="version-0-2-4">
+<h2>Version 0.2.4<a class="headerlink" href="#version-0-2-4" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>added <a class="reference internal" href="reference/spacetimevariogram.html#skgstat.SpaceTimeVariogram" title="skgstat.SpaceTimeVariogram"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpaceTimeVariogram</span></code></a> for
+calculating dispersion functions depending on a space and a time lag.</p></li>
+</ul>
+</div>
+<div class="section" id="version-0-2-3">
+<h2>Version 0.2.3<a class="headerlink" href="#version-0-2-3" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><strong>[severe bug]</strong> A severe bug was in
+<code class="xref py py-func docutils literal notranslate"><span class="pre">Variogram.__vdiff_indexer</span></code> was
+found and fixed. The iterator was indexing the
+<code class="xref py py-func docutils literal notranslate"><span class="pre">Variogram._diff</span></code> array different from
+<code class="xref py py-func docutils literal notranslate"><span class="pre">Variogram.distance</span></code>. <strong>This lead to
+wrong semivariance values for all versions &gt; 0.1.8!</strong>. Fixed now.</p></li>
+<li><p>[Variogram] added unit tests for parameter setting</p></li>
+<li><p>[Variogram] fixed <code class="docutils literal notranslate"><span class="pre">fit_sigma</span></code> setting of <code class="docutils literal notranslate"><span class="pre">'exp'</span></code>: changed the formula
+from <span class="math notranslate nohighlight">\(e^{\left(\frac{1}{x}\right)}\)</span> to
+<span class="math notranslate nohighlight">\(1. - e^{\left(\frac{1}{x}\right)}\)</span> in order to increase with
+distance and, thus, give less weight to distant lag classes during fitting.</p></li>
+</ul>
+</div>
+<div class="section" id="version-0-2-2">
+<h2>Version 0.2.2<a class="headerlink" href="#version-0-2-2" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>added DirectionalVariogram class for direction-dependent variograms</p></li>
+<li><p>[Variogram] changed default values for <cite>estimator</cite> and <cite>model</cite> from
+function to string</p></li>
+</ul>
+</div>
+<div class="section" id="version-0-2-1">
+<h2>Version 0.2.1<a class="headerlink" href="#version-0-2-1" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>added various unittests</p></li>
+</ul>
+</div>
+<div class="section" id="version-0-2-0">
+<h2>Version 0.2.0<a class="headerlink" href="#version-0-2-0" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>completely rewritten Variogram class compared to v0.1.8</p></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">SciKit GStat</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=mmaelicke&repo=scikit-gstat&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="userguide/userguide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="technical/technical.html">Technical Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/reference.html">Code Reference</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-3-2">Version 0.3.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-3-1">Version 0.3.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-3-0">Version 0.3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-2-8">Version 0.2.8</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-2-7">Version 0.2.7</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-2-6">Version 0.2.6</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-2-5">Version 0.2.5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-2-4">Version 0.2.4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-2-3">Version 0.2.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-2-2">Version 0.2.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-2-1">Version 0.2.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-2-0">Version 0.2.0</a></li>
+</ul>
+</li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="https://mmaelicke.github.io/scikit-gstat/SciKitGStat.pdf">Download PDF</a></li>
+    
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="reference/kriging.html" title="previous chapter">Kriging Class</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Mirko Mälicke.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/changelog.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,255 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kriging estimate mode &#8212; SciKit GStat 0.3.2 documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Code Reference" href="../reference/reference.html" />
+    <link rel="prev" title="Directional Variograms" href="direction.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="kriging-estimate-mode">
+<h1>Kriging estimate mode<a class="headerlink" href="#kriging-estimate-mode" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="general">
+<h2>General<a class="headerlink" href="#general" title="Permalink to this headline">¶</a></h2>
+<p>Generally speaking, the kriging procedure for one unobserved point (poi) can be
+broken down into three different steps.</p>
+<ol class="arabic simple">
+<li><p>calculate the distance matrix between the poi and all observed locations
+to determine the in-range points and apply the minimum and maximum points
+to be used constraints.</p></li>
+<li><p>build the kriging equation system by calculating the semi-variance for all
+distances left over from step 1. Formulate squareform matrix and add the
+Lagrange multipliers</p></li>
+<li><p>Solve the kriging equation system, usually by matrix inversion.</p></li>
+</ol>
+<p>Hereby, we try to optimize the step 2 for performance. The basic idea is to
+estimate the semivariances instead of calculating them on each iteration.</p>
+</div>
+<div class="section" id="why-not-calculate">
+<h2>Why not calculate?<a class="headerlink" href="#why-not-calculate" title="Permalink to this headline">¶</a></h2>
+<p>Calculating the semivariance for all elements in the kriging equation system
+gives us the best solution for the interpolation problem formulated by the
+respective variogram. The main point is that the distances for each
+unobserved location do differ at least slightly from all other unobserved
+locations in a kriging modeling application. The variogram parameters do not
+change, they are static within one modeling. This is what we want to use.
+The main advantage is, that the effective range is constant in this setting.
+If we can now specify a precision at which we want to resolute the range, we
+can pre-calculate the corresponding semivariance values. In the time-critical
+iterative formulation of the kriging equation system, one would use the
+pre-calculated values of the closest distance.</p>
+<div class="section" id="what-about-precision">
+<h3>What about precision?<a class="headerlink" href="#what-about-precision" title="Permalink to this headline">¶</a></h3>
+<p>The precision is a hyperparameter. That means it is up to the user to decide
+how precise the estimation of the kriging itself can get given an estimated
+kriging equation system. The main advantage is, that the range and precision
+are constant values within the scope of a simulation and therefore the
+expected uncertainty can be calculated and the precision can be adjusted.
+This will take some effort fine-tune the kriging instance, but it can yield
+results, that are only numerically different while still increasing the
+calculation time one magnitude of order.</p>
+<p>In terms of uncertainty, one can think of a variogram function, where the
+given lag distance is uncertain. This deviation can be calculated as:</p>
+<div class="math notranslate nohighlight">
+\[d = \frac{range}{precision}\]</div>
+<p>and increasing the precision will obviously decrease the lag deviation.</p>
+</div>
+</div>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>This example should illustrate the idea behind the estimation and show how
+the precision value can influence the result. An arbitrary variogram is
+created and then recalculated by the OrdinaryKriging routine to illustrate
+the precision.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="gp">In [2]: </span><span class="kn">from</span> <span class="nn">skgstat</span> <span class="kn">import</span> <span class="n">Variogram</span><span class="p">,</span> <span class="n">OrdinaryKriging</span>
+
+<span class="gp">In [3]: </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="go"># create some random input</span>
+<span class="gp">In [4]: </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="gp">In [5]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">gamma</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+
+<span class="gp">In [6]: </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="gp">In [7]: </span><span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="gp">In [8]: </span><span class="n">V</span> <span class="o">=</span> <span class="n">Variogram</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="gp">In [9]: </span><span class="n">ok</span> <span class="o">=</span> <span class="n">OrdinaryKriging</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;exact&#39;</span><span class="p">)</span>
+
+<span class="go"># exact calculation</span>
+<span class="gp">In [10]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">ok</span><span class="o">.</span><span class="n">range</span> <span class="o">*</span> <span class="mf">1.3</span><span class="p">,</span> <span class="mi">120</span><span class="p">)</span>
+
+<span class="gp">In [11]: </span><span class="n">y_c</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">ok</span><span class="o">.</span><span class="n">gamma_model</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+
+<span class="go"># estimation</span>
+<span class="gp">In [12]: </span><span class="n">ok</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;estimate&#39;</span>
+
+<span class="gp">In [13]: </span><span class="n">y_e</span> <span class="o">=</span> <span class="n">ok</span><span class="o">.</span><span class="n">_estimate_matrix</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="gp">In [14]: </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y_c</span><span class="p">,</span> <span class="s1">&#39;-b&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;exact variogram&#39;</span><span class="p">)</span>
+<span class="gh">Out[14]: </span><span class="go">[&lt;matplotlib.lines.Line2D at 0x7fd0cddc77b8&gt;]</span>
+
+<span class="gp">In [15]: </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y_e</span><span class="p">,</span> <span class="s1">&#39;-g&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;estimated variogram&#39;</span><span class="p">)</span>
+<span class="gh">Out[15]: </span><span class="go">[&lt;matplotlib.lines.Line2D at 0x7fd0cddc7828&gt;]</span>
+
+<span class="gp">In [16]: </span><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;lower right&#39;</span><span class="p">)</span>
+<span class="gh">Out[16]: </span><span class="go">&lt;matplotlib.legend.Legend at 0x7fd0cdf0eeb8&gt;</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/krig_compare.png"><img alt="../_images/krig_compare.png" src="../_images/krig_compare.png" style="width: 7in;" /></a>
+<p>There is almost no difference between the two lines and the result that can
+be expected will be very similar, as the kriging equation system will yield
+very similar weights to make the prediction.</p>
+<p>If the precision is, however, chosen to coarse, there is a difference in the
+reconstructed variogram. This way, the idea behind the estimation becomes
+quite obvious.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="go"># make precision really small</span>
+<span class="gp">In [17]: </span><span class="n">ok</span><span class="o">.</span><span class="n">precision</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="gp">In [18]: </span><span class="n">y_e2</span> <span class="o">=</span> <span class="n">ok</span><span class="o">.</span><span class="n">_estimate_matrix</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="gp">In [19]: </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y_c</span><span class="p">,</span> <span class="s1">&#39;-b&#39;</span><span class="p">)</span>
+<span class="gh">Out[19]: </span><span class="go">[&lt;matplotlib.lines.Line2D at 0x7fd0cdd862b0&gt;]</span>
+
+<span class="gp">In [20]: </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y_e2</span><span class="p">,</span> <span class="s1">&#39;-g&#39;</span><span class="p">)</span>
+<span class="gh">Out[20]: </span><span class="go">[&lt;matplotlib.lines.Line2D at 0x7fd0cdd7c3c8&gt;]</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/krig_coarse.png"><img alt="../_images/krig_coarse.png" src="../_images/krig_coarse.png" style="width: 7in;" /></a>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">SciKit GStat</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=mmaelicke&repo=scikit-gstat&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../userguide/userguide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorials.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="technical.html">Technical Notes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="fitting.html">Fitting a theoretical model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="direction.html">Directional Variograms</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Kriging estimate mode</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#general">General</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#why-not-calculate">Why not calculate?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/reference.html">Code Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="https://mmaelicke.github.io/scikit-gstat/SciKitGStat.pdf">Download PDF</a></li>
+    
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="technical.html">Technical Notes</a><ul>
+      <li>Previous: <a href="direction.html" title="previous chapter">Directional Variograms</a></li>
+      <li>Next: <a href="../reference/reference.html" title="next chapter">Code Reference</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Mirko Mälicke.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/technical/estimate_kriging.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

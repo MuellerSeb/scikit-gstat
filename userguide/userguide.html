@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Guide &#8212; SciKit GStat 0.3.2 documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Introduction" href="introduction.html" />
+    <link rel="prev" title="Getting Started" href="../getting_started.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="user-guide">
+<h1>User Guide<a class="headerlink" href="#user-guide" title="Permalink to this headline">¶</a></h1>
+<p>This user guide shall help you getting started with <code class="docutils literal notranslate"><span class="pre">scikit-gstat</span></code> package
+along with a more general introduction to variogram analysis.</p>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#general">General</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#what-is-geostatistics">What is geostatistics?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#geostatistical-tools">Geostatistical Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#how-to-use-this-guide">How to use this Guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="variogram.html">Variography</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="variogram.html#the-variogram">The variogram</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="variogram.html#general">General</a></li>
+<li class="toctree-l3"><a class="reference internal" href="variogram.html#distance">Distance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="variogram.html#binning">Binning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="variogram.html#observation-differences">Observation differences</a></li>
+<li class="toctree-l3"><a class="reference internal" href="variogram.html#experimental-variograms">Experimental variograms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="variogram.html#variogram-models">Variogram models</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="variogram.html#when-direction-matters">When direction matters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="variogram.html#what-is-direction">What is ‘direction’?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="variogram.html#defining-orientiation">Defining orientiation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="variogram.html#calculating-orientations">Calculating orientations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="variogram.html#directional-variogram">Directional variogram</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="kriging.html">Interpolation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="kriging.html#spatial-interpolation">Spatial interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kriging.html#using-a-spatial-model">Using a spatial model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kriging.html#kriging-equation-system">Kriging equation system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kriging.html#kriging-error">Kriging error</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kriging.html#example">Example</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">SciKit GStat</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=mmaelicke&repo=scikit-gstat&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variogram.html">Variography</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kriging.html">Interpolation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../technical/technical.html">Technical Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/reference.html">Code Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="https://mmaelicke.github.io/scikit-gstat/SciKitGStat.pdf">Download PDF</a></li>
+    
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../getting_started.html" title="previous chapter">Getting Started</a></li>
+      <li>Next: <a href="introduction.html" title="next chapter">Introduction</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Mirko Mälicke.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/userguide/userguide.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

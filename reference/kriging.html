@@ -1,0 +1,210 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kriging Class &#8212; SciKit GStat 0.3.2 documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Changelog" href="../changelog.html" />
+    <link rel="prev" title="Variogram models" href="models.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="kriging-class">
+<h1>Kriging Class<a class="headerlink" href="#kriging-class" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="skgstat.OrdinaryKriging">
+<em class="property">class </em><code class="sig-prename descclassname">skgstat.</code><code class="sig-name descname">OrdinaryKriging</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">variogram</span></em>, <em class="sig-param"><span class="n">min_points</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">max_points</span><span class="o">=</span><span class="default_value">15</span></em>, <em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">'exact'</span></em>, <em class="sig-param"><span class="n">precision</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">solver</span><span class="o">=</span><span class="default_value">'inv'</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">perf</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/skgstat/Kriging.html#OrdinaryKriging"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skgstat.OrdinaryKriging" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="skgstat.OrdinaryKriging.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">variogram</span></em>, <em class="sig-param"><span class="n">min_points</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">max_points</span><span class="o">=</span><span class="default_value">15</span></em>, <em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">'exact'</span></em>, <em class="sig-param"><span class="n">precision</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">solver</span><span class="o">=</span><span class="default_value">'inv'</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">perf</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/skgstat/Kriging.html#OrdinaryKriging.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skgstat.OrdinaryKriging.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ordinary Kriging routine</p>
+<p>Ordinary kriging estimator derived from the given
+<cite>Variogram &lt;skgstat.Variogram&gt;</cite> class. To calculate estimations for
+unobserved locations, an instance of this class can either be called,
+or the <cite>OrdinaryKriging.transform</cite> method can be used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>variogram</strong> (<a class="reference internal" href="variogram.html#skgstat.Variogram" title="skgstat.Variogram"><em>Variogram</em></a>) – Variogram used to build the kriging matrix. Make sure that this
+instance is describing the spatial dependence in the data well,
+otherwise the kriging estimation will most likely produce bad
+estimations.</p></li>
+<li><p><strong>min_points</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Minimum amount of points, that have to lie within the variogram’s
+range. In case not enough points are available, the estimation
+will be rejected and a null value will be estimated.</p></li>
+<li><p><strong>max_points</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Maximum amount of points, that will be considered for the
+estimation of one unobserved location. In case more points are
+available within the variogram’s range, only the <cite>max_points</cite>
+closest will be used for estimation. Note that the kriging matrix
+will be an max_points x max_points matrix and large numbers do
+significantly increase the calculation time.</p></li>
+<li><p><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Has to be one of ‘exact’ or ‘estimate’. In exact mode (default)
+the variogram matrix will be calculated from scratch in each
+iteration. This gives an exact solution, but it is also slower.
+In estimate mode, a set of semivariances is pre-calculated and
+the closest value will be used. This is significantly faster,
+but the estimation quality is dependent on the given precision.</p></li>
+<li><p><strong>precision</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Only needed if <cite>mode=’estimate’</cite>. This is the number of
+pre-calculated in-range semivariances. If chosen too low,
+the estimation will be off, if too high the performance gain is
+limited.</p></li>
+<li><p><strong>solver</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Do not change this argument</p></li>
+<li><p><strong>n_jobs</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Number of processes to be started in multiprocessing.</p></li>
+<li><p><strong>perf</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – If True, the different parts of the algorithm will record their
+processing time. This is meant to be used for optimization and
+will be removed in a future version. Do not rely on this argument.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="skgstat.OrdinaryKriging.transform">
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/skgstat/Kriging.html#OrdinaryKriging.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skgstat.OrdinaryKriging.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Kriging</p>
+<p>returns an estimation of the observable for the given unobserved
+locations. Each coordinate dimension should be a 1D array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>numpy.array</em>) – One 1D array for each coordinate dimension. Typically two or
+three array, x, y, (z) are passed for 2D and 3D Kriging</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>Z</strong> – Array of estimates</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">SciKit GStat</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=mmaelicke&repo=scikit-gstat&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../userguide/userguide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../technical/technical.html">Technical Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="reference.html">Code Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="variogram.html">Variogram Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="directionalvariogram.html">DirectionalVariogram Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spacetimevariogram.html">SpaceTimeVariogram class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="estimator.html">Estimator Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html">Variogram models</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Kriging Class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="https://mmaelicke.github.io/scikit-gstat/SciKitGStat.pdf">Download PDF</a></li>
+    
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="reference.html">Code Reference</a><ul>
+      <li>Previous: <a href="models.html" title="previous chapter">Variogram models</a></li>
+      <li>Next: <a href="../changelog.html" title="next chapter">Changelog</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Mirko Mälicke.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/reference/kriging.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
